@@ -1,0 +1,33 @@
+0. Initial *.pdb file for MD simulations can be built from nucleotide sequence using http://web.x3dna.org/fibermodel/fiberch
+
+1. In VMD, start with xDNA3D *.pdb, load it in VMD, use VMD->Extensions->Automatic PSF Builder (run I'm feeling lucky). In Extensions -> Tk console run:
+
+	set sel [atomselect top all]
+	measure minmax $sel
+
+	set prefix "xdna_*"  
+
+2. Find box size that will encapsulate the DNA molecule with some padding, for 50bp the following works:
+
+	solvate ${prefix}_autopsf.psf ${prefix}_autopsf.pdb -minmax {{-110 -40 -40 } {110 40 40}} -o ${prefix}_W
+
+(If using DNA of a different length, run "measure minmax" to find relevant dimensions)
+
+3. Autoionize molecule with 1.0M salt concentration:
+ 
+	autoionize -psf ${prefix}_W.psf -pdb ${prefix}_W.pdb -sc 1.0 -cation POT -o ${prefix}_WI
+
+4. Restrain molecule for initial equilibration steps:
+	set sel [atomselect top "name N1 C2 N3 C4 C5 C6 N7 C8 N9" ]
+	$sel set beta 1
+	set sel [atomselect top "all" ]
+	$sel writepdb ${prefix}_WIbeta.pdb
+
+
+5. In display window of VMD, find atoms on the end base pairs , press 1, click on them -> VMD startup command will output their indexes (make sure you bond the 2 atoms on different DNA strands A and B), put them in extra bonds.txt file to prevent DNA ends from fraying:
+
+	bond idxA1 idxB1 4 2.9
+	bond idxB2 idxA2 4 2.9
+
+
+
