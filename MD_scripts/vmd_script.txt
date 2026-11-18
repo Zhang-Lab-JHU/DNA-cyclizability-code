@@ -13,7 +13,7 @@
 
 (If using DNA of a different length, run "measure minmax" to find relevant dimensions)
 
-3. Autoionize molecule with 1.0M salt concentration:
+3. Autoionize molecule with 1.0M salt concentration (SOD - sodium):
  
 	autoionize -psf ${prefix}_W.psf -pdb ${prefix}_W.pdb -sc 1.0 -cation SOD -o ${prefix}_WI
 
